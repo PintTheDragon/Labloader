@@ -12,5 +12,6 @@ namespace Labloader.Events
         }
 
         internal static event EventHandler<PlayerJoinedEventArgs> PlayerJoinedEvent;
+        internal static void OnPlayerJoined(PlayerJoinedEventArgs ev) => PlayerJoinedEvent?.Invoke(null, ev);
     }
 }

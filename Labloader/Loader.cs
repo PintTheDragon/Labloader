@@ -1,4 +1,5 @@
-﻿using Labloader.Plugins;
+﻿using Labloader.Events.Patches;
+using Labloader.Plugins;
 
 namespace Labloader
 {
@@ -7,6 +8,7 @@ namespace Labloader
         public static void Main()
         {
             PluginLoader.LoadPlugins();
+            Patcher.Patch();
         }
     }
 }

@@ -60,6 +60,7 @@ crashlytics-build.properties
 
 .git
 .idea
+packages/
 Labloader/obj
 Labloader/bin
 Labloader/lib

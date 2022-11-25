@@ -13,12 +13,36 @@ namespace Labloader.API.Features
     {
         private static List<Player> list = new List<Player>();
         
-        private NetworkPlayerObject player;
-
-        private Dictionary<string, Role> RoleMap = new Dictionary<string, Role>()
+        /// <summary>
+        /// Maps unity object name (PlayerCharacter.name) to role enum.
+        /// </summary>
+        private static Dictionary<string, Role> RoleMap = new Dictionary<string, Role>()
         {
-
+            {"D-9341", Role.ClassD},
+            {"D-9634", Role.ClassD},
+            {"D-9758", Role.ClassD},
+            {"D-9843", Role.ClassD},
+            {"MTF", Role.Mtf},
+            {"MTF 2", Role.Mtf},
+            {"MTF 3", Role.Mtf},
+            {"MTF 4", Role.Mtf},
+            {"O5", Role.O5},
+            {"Scientist", Role.Scientist},
+            {"SCP-173", Role.Scp173},
         };
+
+        /// <summary>
+        /// Maps unity object name (PlayerCharacter.name) to role enum.
+        /// </summary>
+        private static Dictionary<string, Team> TeamMap = new Dictionary<string, Team>()
+        {
+            { "CBTeam", Team.ContainmentBreach },
+            { "ClassDTeam", Team.ClassD },
+            { "MTFTeam", Team.Mtf },
+            { "SCPTeam", Team.Scp },
+        };
+        
+        private NetworkPlayerObject player;
 
         public void Awake()
         {
@@ -95,16 +119,20 @@ namespace Labloader.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the player's current role.
+        /// Gets the player's current role.
         /// </summary>
-        public Role Role
-        {
-            get => (Role) this.player.CurrentCharacter;
-            set
-            {
-                this.player.CurrentCharacter = value;
-            }
-        }
+        public Role Role =>
+            this.player.stats.health.dead 
+                ? Role.Spectator 
+                : (RoleMap.TryGetValue(this.player.CurrentCharacter.name, out var role) ? role : Role.None);
+        
+        /// <summary>
+        /// Gets the player's current team.
+        /// </summary>
+        public Team Team =>
+            this.player.stats.health.dead 
+                ? Team.Dead 
+                : (TeamMap.TryGetValue(this.player.CurrentTeam.name, out var team) ? team : Team.None);
 
         /// <summary>
         /// Gets the player's ID, or null if they don't have one.
