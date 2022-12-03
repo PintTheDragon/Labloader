@@ -16,12 +16,24 @@ namespace Labloader.Plugins
         
         public static void LoadPlugins()
         {
-            var deps = Directory.GetFiles(Path.Combine(Paths.Plugins, "dependencies"));
+            if (!Directory.Exists(Paths.Dependencies))
+            {
+                Directory.CreateDirectory(Paths.Dependencies);
+            }
+            
+            var deps = Directory.GetFiles(Paths.Dependencies);
             Log.Info("Loading " + deps.Length + " dependencies.");
             
             for (var i = 0; i < deps.Length; i++)
             {
                 LoadDependency(i, deps.Length, deps[i]);
+            }
+            
+            // This check shouldn't be needed, as the dependencies check
+            // should include it.
+            if (!Directory.Exists(Paths.Plugins))
+            {
+                Directory.CreateDirectory(Paths.Plugins);
             }
 
             var plugins = Directory.GetFiles(Paths.Plugins);

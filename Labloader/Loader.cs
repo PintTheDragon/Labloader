@@ -1,4 +1,6 @@
-﻿using Labloader.Events.Patches;
+﻿using System;
+using Labloader.API.Features;
+using Labloader.Events.Patches;
 using Labloader.Plugins;
 
 namespace Labloader
@@ -7,8 +9,16 @@ namespace Labloader
     {
         public static void Main()
         {
-            PluginLoader.LoadPlugins();
-            Patcher.Patch();
+            try
+            {
+                PluginLoader.LoadPlugins();
+                Patcher.Patch();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                Log.Error("Failed to start Labloader!");
+            }
         }
     }
 }

@@ -11,14 +11,19 @@ namespace Labloader.Plugins
     {
         internal static Config AddConfig(string name, object configType)
         {
-            Config config;
+            if (!Directory.Exists(Paths.Config))
+            {
+                Directory.CreateDirectory(Paths.Config);
+            }
             
+            Config config;
+
             var path = Path.Combine(Paths.Config, name.Replace(".", "").Replace("/", "").Replace("\\", "")+".json");
             if (!File.Exists(path))
             {
-                if (!Directory.Exists(Path.GetDirectoryName(path))) Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, JsonConvert.SerializeObject(configType, Formatting.Indented));
             }
+            
             try
             {
                 config = (Config) JsonConvert.DeserializeObject(File.ReadAllText(path));
