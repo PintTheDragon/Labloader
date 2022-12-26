@@ -1,5 +1,6 @@
 ﻿using System;
 using Labloader.API.Features;
+using Labloader.Events.BaseEventListeners;
 using Labloader.Events.Patches;
 using Labloader.Plugins;
 
@@ -13,6 +14,7 @@ namespace Labloader
             {
                 PluginLoader.LoadPlugins();
                 Patcher.Patch();
+                Listeners.Register();
             }
             catch (Exception e)
             {

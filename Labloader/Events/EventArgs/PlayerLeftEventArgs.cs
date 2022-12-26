@@ -2,11 +2,11 @@ using Labloader.API.Features;
 
 namespace Labloader.Events.EventArgs
 {
-    public struct PlayerJoinedEventArgs
+    public class PlayerLeftEventArgs
     {
         public Player Player { get; }
         
-        internal PlayerJoinedEventArgs(Player player)
+        internal PlayerLeftEventArgs(Player player)
         {
             Player = player;
         }

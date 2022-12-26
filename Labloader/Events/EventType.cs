@@ -2,6 +2,7 @@
 {
     public enum EventType
     {
-        PlayerJoinedEvent,
+        PlayerJoined,
+        PlayerLeft,
     }
 }
