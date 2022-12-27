@@ -82,7 +82,7 @@ namespace Labloader
             var tempDeps = Directory.GetFiles(DependenciesPath);
 
             // We need to ensure our required DLLs exist.
-            foreach (var requiredDep in RequiredDependencies.Where(dep => !tempDeps.Contains(Path.Combine(DependenciesPath, dep))))
+            foreach (var requiredDep in RequiredDependencies)
             {
                 // It doesn't exist, so make it.
                 using (var fileStream = File.Create(Path.Combine(DependenciesPath, requiredDep)))
@@ -109,6 +109,8 @@ namespace Labloader
             if (!path.EndsWith(".dll")) return;
 
             var fileName = Path.GetFileName(path);
+            Assembly.Load(File.ReadAllBytes(path));
+            
             Info(string.Concat(new object[] { 
                 "Dependency ",
                 fileName,
@@ -118,7 +120,6 @@ namespace Labloader
                 count,
                 ")"
             }));
-            Assembly.Load(File.ReadAllBytes(path));
         }
         
         public static void Info(object message) => Log("INFO", message.ToString(), ConsoleColor.Gray);
