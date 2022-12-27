@@ -3,8 +3,8 @@
     /// <summary>
     /// Plugin config class.
     /// </summary>
-    public class Config
+    public interface IConfig
     {
-        public bool IsEnabled { get; set; } = true;
+        bool IsEnabled { get; set; }
     }
 }

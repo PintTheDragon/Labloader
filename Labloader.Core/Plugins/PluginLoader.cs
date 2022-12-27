@@ -9,9 +9,9 @@ namespace Labloader.Core.Plugins
 {
     public static class PluginLoader
     {
-        private static readonly Dictionary<string, Plugin<Config>> LoadedPlugins = new Dictionary<string, Plugin<Config>>();
+        private static readonly Dictionary<string, IPlugin<IConfig>> LoadedPlugins = new Dictionary<string, IPlugin<IConfig>>();
         
-        private static readonly List<Plugin<Config>> TempPlugins = new List<Plugin<Config>>();
+        private static readonly List<IPlugin<IConfig>> TempPlugins = new List<IPlugin<IConfig>>();
 
         public static void LoadPlugins()
         {
@@ -51,7 +51,7 @@ namespace Labloader.Core.Plugins
                     {
                         if (!type.IsSubclassOf(typeof(Plugin<>)) || type == typeof(Plugin<>)) continue;
                         
-                        var plugin = (Plugin<Config>) Activator.CreateInstance(type);
+                        var plugin = (IPlugin<IConfig>) Activator.CreateInstance(type);
                             
                         plugin.Config = ConfigManager.AddConfig(plugin.Name, Activator.CreateInstance(plugin.Config.GetType()));
                         plugin.File = fileName;
@@ -118,14 +118,22 @@ namespace Labloader.Core.Plugins
             TempPlugins.Clear();
         }
 
-        private static void Enable(this Plugin<Config> plugin)
+        private static void Enable(this IPlugin<IConfig> plugin)
         {
             foreach (var type in plugin.Assembly.GetTypes())
             {
                 foreach (var methodInfo in type.GetMethods())
                 {
-                    var customAttribute = methodInfo.GetCustomAttribute<EventAttribute>();
+                    var customAttribute = methodInfo.GetCustomAttribute<EventHandlerAttribute>();
                     if (customAttribute == null) continue;
+                    
+                    if (!methodInfo.IsStatic)
+                    {
+                        Log.Warn("[" + plugin.Name + "] Could not register " + type.FullName + "." + methodInfo.Name + " as an event handler as it is not static!");
+                        continue;
+                    }
+                    
+                    // TODO: Add an error for incorrect arguments.
                     
                     var eventInfo = Events.Events.GetEvent(customAttribute.EventType);
                     eventInfo.AddEventHandler(null, Delegate.CreateDelegate(eventInfo.EventHandlerType, methodInfo));
@@ -135,13 +143,13 @@ namespace Labloader.Core.Plugins
             plugin.OnEnabled();
         }
 
-        private static void Disable(this Plugin<Config> plugin)
+        private static void Disable(this IPlugin<IConfig> plugin)
         {
             foreach (var type in plugin.Assembly.GetTypes())
             {
                 foreach (var methodInfo in type.GetMethods())
                 {
-                    var customAttribute = methodInfo.GetCustomAttribute<EventAttribute>();
+                    var customAttribute = methodInfo.GetCustomAttribute<EventHandlerAttribute>();
                     if (customAttribute == null) continue;
                     
                     var eventInfo = Events.Events.GetEvent(customAttribute.EventType);

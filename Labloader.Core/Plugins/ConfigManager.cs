@@ -8,14 +8,14 @@ namespace Labloader.Core.Plugins
 {
     internal static class ConfigManager
     {
-        internal static Config AddConfig(string name, object configType)
+        internal static IConfig AddConfig(string name, object configType)
         {
             if (!Directory.Exists(Paths.Config))
             {
                 Directory.CreateDirectory(Paths.Config);
             }
             
-            Config config;
+            IConfig config;
 
             var path = Path.Combine(Paths.Config, name.Replace(".", "").Replace("/", "").Replace("\\", "")+".json");
             if (!File.Exists(path))
@@ -25,18 +25,18 @@ namespace Labloader.Core.Plugins
             
             try
             {
-                config = (Config) JsonConvert.DeserializeObject(File.ReadAllText(path));
+                config = (IConfig) JsonConvert.DeserializeObject(File.ReadAllText(path));
             }
             catch (NullReferenceException)
             {
                 File.WriteAllText(path, JsonConvert.SerializeObject(configType, Formatting.Indented));
-                config = (Config) configType;
+                config = (IConfig) configType;
             }
             catch (JsonException)
             {
                 File.Move(path, Path.Combine(Paths.Config, "INVALID-" + name.Replace(".", "").Replace("/", "").Replace("\\", "")+".json"));
                 File.WriteAllText(path, JsonConvert.SerializeObject(configType, Formatting.Indented));
-                config = (Config) configType;
+                config = (IConfig) configType;
             }
 
             return config;

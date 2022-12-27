@@ -158,7 +158,8 @@
         <Compile Include="API\Features\Paths.cs" />
         <Compile Include="API\Features\Player.cs" />
         <Compile Include="API\Features\Plugin.cs" />
-        <Compile Include="API\Interfaces\Config.cs" />
+        <Compile Include="API\Interfaces\IConfig.cs" />
+        <Compile Include="API\Interfaces\IPlugin.cs" />
         <Compile Include="Events\EventArgs\PlayerDamagedEventArgs.cs" />
         <Compile Include="Events\EventArgs\PlayerDropItemEventArgs.cs" />
         <Compile Include="Events\EventArgs\PlayerEnterPocketDimensionEventArgs.cs" />
@@ -183,7 +184,7 @@
         <Compile Include="Events\EventType.cs" />
         <Compile Include="Events\Patches\Patcher.cs" />
         <Compile Include="Plugins\ConfigManager.cs" />
-        <Compile Include="Plugins\EventAttribute.cs" />
+        <Compile Include="Plugins\EventHandlerAttribute.cs" />
         <Compile Include="Plugins\PluginLoader.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

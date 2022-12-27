@@ -3,11 +3,12 @@ using Labloader.Core.Events;
 
 namespace Labloader.Core.Plugins
 {
-    public class EventAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method)]
+    public class EventHandlerAttribute : Attribute
     {
         internal EventType EventType;
 
-        public EventAttribute(EventType eventType)
+        public EventHandlerAttribute(EventType eventType)
         {
             EventType = eventType;
         }

@@ -9,61 +9,42 @@ namespace Labloader.Core.API.Features
     /// The plugin class.
     /// </summary>
     /// <typeparam name="T">The plugin's config.</typeparam>
-    public abstract class Plugin<T> : IComparable<Plugin<Config>> where T : Config, new()
+    public abstract class Plugin<T> : IPlugin<T>
+        where T : IConfig, new()
     {
-        /// <summary>
-        /// The plugin's assembly.
-        /// </summary>
-        public Assembly Assembly { get; internal set; }
+        /// <inheritdoc/>
+        public Assembly Assembly { get; set; }
         
-        /// <summary>
-        /// The plugin's file name and extension.
-        /// </summary>
-        public string File { get; internal set; }
+        /// <inheritdoc/>
+        public string File { get; set; }
         
-        /// <summary>
-        /// The plugin's version.
-        /// </summary>
-        public abstract Version Version { get; internal set; }
+        /// <inheritdoc/>
+        public abstract Version Version { get; }
         
-        /// <summary>
-        /// The plugin's author.
-        /// </summary>
-        public abstract string Author { get; internal set; }
+        /// <inheritdoc/>
+        public abstract string Author { get; }
         
-        /// <summary>
-        /// The plugin's name.
-        /// </summary>
-        public abstract string Name { get; internal set; }
+        /// <inheritdoc/>
+        public abstract string Name { get; }
 
-        /// <summary>
-        /// Determines when the plugin will load (and when its events will run) compared to other plugins.
-        /// </summary>
-        public PluginPriority Priority { get; internal set; } = PluginPriority.Normal;
+        /// <inheritdoc/>
+        public PluginPriority Priority { get; } = PluginPriority.Normal;
         
-        /// <summary>
-        /// The plugin's config.
-        /// </summary>
-        public T Config { get; internal set; }
+        /// <inheritdoc/>
+        public T Config { get; set; }
 
-        /// <summary>
-        /// Called when the plugin is enabled.
-        /// </summary>
-        public void OnEnabled()
+        /// <inheritdoc/>
+        public virtual void OnEnabled()
         {
             Log.Info(Name+" (version "+Version+") by "+Author+" has been enabled!");
         }
 
-        /// <summary>
-        /// Called when the plugin is disabled.
-        /// </summary>
-        public void OnDisabled()
+        /// <inheritdoc/>
+        public virtual void OnDisabled()
         {
             Log.Info(Name+" (version "+Version+") by "+Author+" has been disabled!");
         }
         
-        public int CompareTo(Plugin<Config> other) => -Priority.CompareTo(other.Priority);
+        public int CompareTo(IPlugin<IConfig> other) => -Priority.CompareTo(other.Priority);
     }
-
-
 }
