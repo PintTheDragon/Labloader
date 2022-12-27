@@ -2,7 +2,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerExitPocketDimensionEventArgs
+    public class PlayerExitPocketDimensionEventArgs : System.EventArgs
     {
         public Player Player { get; }
 

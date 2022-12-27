@@ -2,7 +2,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerDyingEventArgs
+    public class PlayerDyingEventArgs : System.EventArgs
     {
         public Player Attacker { get; }
         

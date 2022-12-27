@@ -3,7 +3,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerDamagingEventArgs
+    public class PlayerDamagingEventArgs : System.EventArgs
     {
         [CanBeNull]
         public Player Attacker { get; }

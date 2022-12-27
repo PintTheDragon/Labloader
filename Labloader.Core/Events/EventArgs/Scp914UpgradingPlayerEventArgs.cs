@@ -3,7 +3,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class Scp914UpgradingPlayerEventArgs
+    public class Scp914UpgradingPlayerEventArgs : System.EventArgs
     {
         public Player Player { get; }
         

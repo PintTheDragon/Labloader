@@ -4,7 +4,7 @@ using Labloader.Core.API.Enums;
 
 namespace Labloader.Core.API.Interfaces
 {
-    public interface IPlugin<T> : IComparable<IPlugin<IConfig>>
+    public interface IPlugin<out T> : IComparable<IPlugin<IConfig>>
         where T : IConfig
     {
         /// <summary>
@@ -40,7 +40,7 @@ namespace Labloader.Core.API.Interfaces
         /// <summary>
         /// The plugin's config.
         /// </summary>
-        T Config { get; set; }
+        T Config { get; }
 
         /// <summary>
         /// Called when the plugin is enabled.

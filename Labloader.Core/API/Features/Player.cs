@@ -12,6 +12,11 @@ namespace Labloader.Core.API.Features
     {
         #region STATIC
         private static List<Player> _list = new List<Player>();
+
+        private static void UpdateList()
+        {
+            _list = Object.FindObjectsOfType<Player>().Where(ply => ply.ID != 0).ToList();
+        }
         
         /// <summary>
         /// Gets all of the players in the server.
@@ -53,29 +58,41 @@ namespace Labloader.Core.API.Features
         /// <param name="obj">The player's GameObject.</param>
         /// <returns>The Player, or null if they don't exist.</returns>
         public static Player Get(GameObject obj) => List.FirstOrDefault(ply => ply.GameObject == obj);
+        
+        /// <summary>
+        /// Gets the specified player by their ID (specific to this server/session).
+        /// </summary>
+        /// <param name="id">The player's ID.</param>
+        /// <returns>The Player, or null if they don't exist.</returns>
+        public static Player Get(ushort id) => List.FirstOrDefault(ply => ply.ID == id);
         #endregion
 
         #region COMPONENT
-        private NetworkPlayerObject player;
+
+        private NetworkPlayer player;
+        private NetworkPlayerObject playerObj;
+        private ushort id;
 
         void Awake()
         {
-            this.player = this.gameObject.GetComponent<NetworkPlayerObject>();
+            this.player = this.gameObject.GetComponent<NetworkPlayer>();
+            this.playerObj = this.gameObject.GetComponent<NetworkPlayerObject>();
+            this.id = this.player != null ? this.player.netObj.ClientId : this.playerObj.netObj.ClientId;
         }
         
         void OnEnable()
         {
-            _list = Object.FindObjectsOfType<Player>().ToList();
+            UpdateList();
         }
         
         void OnDisable()
         {
-            _list = Object.FindObjectsOfType<Player>().ToList();
+            UpdateList();
         }
         
         void OnDestroy()
         {
-            _list = Object.FindObjectsOfType<Player>().ToList();
+            UpdateList();
         }
         #endregion
 
@@ -84,9 +101,14 @@ namespace Labloader.Core.API.Features
         private new GameObject gameObject => base.gameObject;
         
         /// <summary>
+        /// Gets the player's NetworkPlayer.
+        /// </summary>
+        public NetworkPlayer NetworkPlayer => this.player;
+        
+        /// <summary>
         /// Gets the player's NetworkPlayerObject.
         /// </summary>
-        public NetworkPlayerObject NetworkPlayer => this.player;
+        public NetworkPlayerObject NetworkPlayerObject => this.playerObj;
         
         /// <summary>
         /// Gets the player's GameObject.
@@ -96,7 +118,7 @@ namespace Labloader.Core.API.Features
         /// <summary>
         /// The user's client ID (unique and specific to this server/session).
         /// </summary>
-        public ushort ID => this.NetworkPlayer.netObj.ClientId;
+        public ushort ID => id;
         
         /// <summary>
         /// Gets the player's user ID (their ID through steam/discord), or null if they don't have one.
@@ -114,17 +136,17 @@ namespace Labloader.Core.API.Features
         /// <summary>
         /// Gets the player's dimension.
         /// </summary>
-        public RoomIdentity.ZoneType Dimension => this.NetworkPlayer.GetZone();
+        public RoomIdentity.ZoneType Dimension => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.GetZone() : RoomIdentity.ZoneType.Unknown;
 
         /// <summary>
         /// Gets or sets the player's name.
         /// </summary>
-        public string Name => this.NetworkPlayer.PlayerName;
+        public string Name => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.PlayerName : this.NetworkPlayer.PlayerName;
 
         /// <summary>
         /// Gets or sets the player's health.
         /// </summary>
-        public float Health => this.NetworkPlayer.stats.health.health;
+        public float Health => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.health.health : 0;
 
         /// <summary>
         /// Damages the player.
@@ -132,30 +154,31 @@ namespace Labloader.Core.API.Features
         /// <param name="damage">The amount of damage to deal.</param>
         public void Damage(float damage)
         {
+            if (this.NetworkPlayerObject == null) return;
             // TODO: Message and killer.
-            this.NetworkPlayer.stats.health.Damage(damage);
+            this.NetworkPlayerObject.stats.health.Damage(damage);
         }
 
         /// <summary>
         /// Gets the player's current role.
         /// </summary>
         public Role Role =>
-            this.NetworkPlayer.stats.health.dead 
+            (this.NetworkPlayerObject == null || this.NetworkPlayerObject.stats.health.dead)
                 ? Role.Spectator 
-                : (RoleMap.TryGetValue(this.NetworkPlayer.CurrentCharacter.name, out var role) ? role : Role.None);
+                : (RoleMap.TryGetValue(this.NetworkPlayerObject.CurrentCharacter.name, out var role) ? role : Role.None);
         
         /// <summary>
         /// Gets the player's current team.
         /// </summary>
         public Team Team =>
-            this.NetworkPlayer.stats.health.dead 
+            (this.NetworkPlayerObject == null || this.NetworkPlayerObject.stats.health.dead)
                 ? Team.Dead 
-                : (TeamMap.TryGetValue(this.NetworkPlayer.CurrentTeam.name, out var team) ? team : Team.None);
+                : (TeamMap.TryGetValue(this.NetworkPlayerObject.CurrentTeam.name, out var team) ? team : Team.None);
 
         /// <summary>
         /// Gets the player's IP address, or null if none exists.
         /// </summary>
-        public string IP => !((RudpServer)NetworkManager.instance.server.server).TryGetClient(this.NetworkPlayer.netObj.ClientId, out var client) ? null : client.RemoteEndPoint.Address.ToString();
+        public string IP => !((RudpServer)NetworkManager.instance.server.server).TryGetClient(this.ID, out var client) ? null : client.RemoteEndPoint.Address.ToString();
 
         /// <summary>
         /// Gets the player's transform.
@@ -194,8 +217,13 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public float WalkSpeed
         {
-            get => this.NetworkPlayer.stats.data.walkSpeed;
-            set => this.NetworkPlayer.stats.data.walkSpeed = value;
+            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.walkSpeed : 0;
+            set
+            {
+                if (this.NetworkPlayerObject == null) return;
+                
+                this.NetworkPlayerObject.stats.data.walkSpeed = value;
+            }
         }
 
         /// <summary>
@@ -203,8 +231,13 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public float SprintSpeed
         {
-            get => this.NetworkPlayer.stats.data.sprintSpeed;
-            set => this.NetworkPlayer.stats.data.sprintSpeed = value;
+            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.sprintSpeed : 0;
+            set
+            {
+                if (this.NetworkPlayerObject == null) return;
+                
+                this.NetworkPlayerObject.stats.data.sprintSpeed = value;
+            }
         }
 
         /// <summary>
@@ -212,8 +245,13 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public float CrouchSpeed
         {
-            get => this.NetworkPlayer.stats.data.crouchSpeed;
-            set => this.NetworkPlayer.stats.data.crouchSpeed = value;
+            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.crouchSpeed : 0;
+            set
+            {
+                if (this.NetworkPlayerObject == null) return;
+                
+                this.NetworkPlayerObject.stats.data.crouchSpeed = value;
+            }
         }
 
         /// <summary>
@@ -221,8 +259,13 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public bool Noclip
         {
-            get => this.NetworkPlayer.NoclipController.enabled;
-            set => this.NetworkPlayer.NoclipController.enabled = value;
+            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.NoclipController.enabled : false;
+            set
+            {
+                if (this.NetworkPlayerObject == null) return;
+                
+                this.NetworkPlayerObject.NoclipController.enabled = value;
+            }
         }
         #endregion
 
@@ -232,8 +275,10 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public void Kill(string message = null)
         {
+            if (this.NetworkPlayerObject == null) return;
+            
             // TODO: Message, Killer.
-            this.NetworkPlayer.stats.health.Kill();
+            this.NetworkPlayerObject.stats.health.Kill();
         }
 
         /// <summary>

@@ -2,7 +2,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerLeftEventArgs
+    public class PlayerLeftEventArgs : System.EventArgs
     {
         public Player Player { get; }
         

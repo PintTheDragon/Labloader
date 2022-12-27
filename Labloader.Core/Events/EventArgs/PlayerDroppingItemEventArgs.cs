@@ -2,7 +2,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerDroppingItemEventArgs
+    public class PlayerDroppingItemEventArgs : System.EventArgs
     {
         public Player Player { get; }
         

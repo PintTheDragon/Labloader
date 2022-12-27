@@ -122,8 +122,8 @@ namespace Labloader
             }));
         }
         
-        public static void Info(object message) => Log("INFO", message.ToString(), ConsoleColor.Gray);
-        public static void Error(object message) => Log("ERROR", message.ToString(), ConsoleColor.Red);
+        public static void Info(object message) => Log("INFO", message?.ToString(), ConsoleColor.Gray);
+        public static void Error(object message) => Log("ERROR", message?.ToString(), ConsoleColor.Red);
 
         private static void Log(string level, string message, ConsoleColor color)
         {

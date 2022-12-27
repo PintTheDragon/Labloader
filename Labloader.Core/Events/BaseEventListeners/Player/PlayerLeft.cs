@@ -9,12 +9,12 @@ namespace Labloader.Core.Events.BaseEventListeners.Player
 
         public override void Run(ushort id)
         {
-            if (!NetworkManager.instance.connectedPlayers.TryGetValue(id, out var player)) return;
-
-            var plyObj = player.player != null ? player.player.gameObject : player.playerObject.gameObject;
-            var apiPlayer = plyObj.GetComponent<API.Features.Player>();
-
-            Core.Events.Events.OnPlayerLeft(new PlayerLeftEventArgs(apiPlayer));
+            if (id == 0) return;
+            
+            var player = API.Features.Player.Get(id);
+            
+            if(player)
+                Core.Events.Events.OnPlayerLeft(new PlayerLeftEventArgs(player));
         }
     }
 }

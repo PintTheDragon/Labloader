@@ -14,7 +14,7 @@ namespace Labloader.Example
         public override void OnEnabled()
         {
             Singleton = this;
-            
+
             Log.Info("I exist!");
             
             base.OnEnabled();

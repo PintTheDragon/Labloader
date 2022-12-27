@@ -49,11 +49,14 @@ namespace Labloader.Core.Plugins
                 {
                     foreach (var type in assembly.GetTypes())
                     {
-                        if (!type.IsSubclassOf(typeof(Plugin<>)) || type == typeof(Plugin<>)) continue;
-                        
+                        if (type.IsAbstract || type.IsInterface || !(type.BaseType?.IsGenericType ?? false) ||
+                            type.BaseType.GetGenericTypeDefinition() != typeof(Plugin<>))
+                            continue; 
+
                         var plugin = (IPlugin<IConfig>) Activator.CreateInstance(type);
-                            
-                        plugin.Config = ConfigManager.AddConfig(plugin.Name, Activator.CreateInstance(plugin.Config.GetType()));
+                        
+                        // TODO: Improve the way that this is handled.
+                        type.GetProperty("Config").SetValue(plugin, ConfigManager.AddConfig(plugin.Name, Activator.CreateInstance(type.BaseType.GenericTypeArguments[0])));
                         plugin.File = fileName;
                         plugin.Assembly = assembly;
                             
@@ -134,7 +137,6 @@ namespace Labloader.Core.Plugins
                     }
                     
                     // TODO: Add an error for incorrect arguments.
-                    
                     var eventInfo = Events.Events.GetEvent(customAttribute.EventType);
                     eventInfo.AddEventHandler(null, Delegate.CreateDelegate(eventInfo.EventHandlerType, methodInfo));
                 }

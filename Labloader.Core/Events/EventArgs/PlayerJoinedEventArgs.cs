@@ -2,7 +2,7 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public struct PlayerJoinedEventArgs
+    public class PlayerJoinedEventArgs : System.EventArgs
     {
         public Player Player { get; }
         
