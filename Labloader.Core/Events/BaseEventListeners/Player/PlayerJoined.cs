@@ -13,7 +13,7 @@ namespace Labloader.Core.Events.BaseEventListeners.Player
         {
             if (!NetworkManager.instance.connectedPlayers.TryGetValue(id, out var player)) return;
 
-            var plyObj = player.player.gameObject;
+            var plyObj = player.player != null ? player.player.gameObject : player.playerObject.gameObject;
             var apiPlayer = plyObj.AddComponent<API.Features.Player>();
 
             Core.Events.Events.OnPlayerJoined(new PlayerJoinedEventArgs(apiPlayer));
