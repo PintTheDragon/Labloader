@@ -1,3 +1,5 @@
+using System;
+using Labloader.Core.API.Features;
 using UnityEngine.Events;
 
 namespace Labloader.Core.Events.BaseEventListeners
@@ -9,12 +11,24 @@ namespace Labloader.Core.Events.BaseEventListeners
 
         public void Register()
         {
-            Event.AddListener(Run);
+            Event.AddListener(InternalRun);
         }
 
         public void Unregister()
         {
-            Event.RemoveListener(Run);
+            Event.RemoveListener(InternalRun);
+        }
+
+        private void InternalRun(T arg)
+        {
+            try
+            {
+                Run(arg);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
     }
 }

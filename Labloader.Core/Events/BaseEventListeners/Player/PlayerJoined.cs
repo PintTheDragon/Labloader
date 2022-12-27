@@ -1,3 +1,4 @@
+using System;
 using Labloader.Core.API.Features;
 using Labloader.Core.Events.EventArgs;
 using UnityEngine.Events;
@@ -12,7 +13,7 @@ namespace Labloader.Core.Events.BaseEventListeners.Player
         {
             if (!NetworkManager.instance.connectedPlayers.TryGetValue(id, out var player)) return;
 
-            var plyObj = player.playerObject.gameObject;
+            var plyObj = player.player.gameObject;
             var apiPlayer = plyObj.AddComponent<API.Features.Player>();
 
             Core.Events.Events.OnPlayerJoined(new PlayerJoinedEventArgs(apiPlayer));
