@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Labloader</id>
+    <title>Labloader</title>
+    <version>1.0.0</version>
+    <authors>PintTheDragon</authors>
+    <owners>PintTheDragon</owners>
+    <copyright>Copyright © PintTheDragon 2022</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <repository type="Git" url="https://github.com/PintTheDragon/Labloader" />
+    <licenseUrl>https://github.com/PintTheDragon/Labloader/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/PintTheDragon/Labloader</projectUrl>
+    <description>Labloader is an experimental plugin loader and framework for SCP: Labrat.</description>
+
+    <dependencies>
+      <group targetFramework="net48" />
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="Labloader\bin\Release\Labloader.dll" target="lib\net48" />
+    <file src="Labloader\bin\Release\Labloader.xml" target="lib\net48" />
+
+    <file src="Labloader.Core\bin\Release\Labloader.Core.dll" target="lib\net48" />
+    <file src="Labloader.Core\bin\Release\Labloader.Core.xml" target="lib\net48" />
+  </files>
+</package>

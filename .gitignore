@@ -5,3 +5,4 @@ Labloader/obj
 Labloader.Core/bin
 Labloader.Core/obj
 Labloader.sln.DotSettings.user
+*.nupkg
