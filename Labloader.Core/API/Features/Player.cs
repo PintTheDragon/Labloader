@@ -10,12 +10,18 @@ namespace Labloader.Core.API.Features
 {
     public class Player : MonoBehaviour
     {
-        private static List<Player> list = new List<Player>();
+        #region STATIC
+        private static List<Player> _list = new List<Player>();
+        
+        /// <summary>
+        /// Gets all of the players in the server.
+        /// </summary>
+        public static ReadOnlyCollection<Player> List => _list.AsReadOnly();
         
         /// <summary>
         /// Maps unity object name (PlayerCharacter.name) to role enum.
         /// </summary>
-        private static Dictionary<string, Role> RoleMap = new Dictionary<string, Role>()
+        private static readonly Dictionary<string, Role> RoleMap = new Dictionary<string, Role>()
         {
             {"D-9341", Role.ClassD},
             {"D-9634", Role.ClassD},
@@ -33,79 +39,82 @@ namespace Labloader.Core.API.Features
         /// <summary>
         /// Maps unity object name (PlayerCharacter.name) to role enum.
         /// </summary>
-        private static Dictionary<string, Team> TeamMap = new Dictionary<string, Team>()
+        private static readonly Dictionary<string, Team> TeamMap = new Dictionary<string, Team>()
         {
             { "CBTeam", Team.ContainmentBreach },
             { "ClassDTeam", Team.ClassD },
             { "MTFTeam", Team.Mtf },
             { "SCPTeam", Team.Scp },
         };
-        
+        #endregion
+
+        #region COMPONENT
         private NetworkPlayerObject player;
 
-        public void Awake()
+        void Awake()
         {
-            player = this.gameObject.GetComponent<NetworkPlayerObject>();
-        }
-
-        public void OnEnable()
-        {
-            list = Object.FindObjectsOfType<Player>().ToList();
+            this.player = this.gameObject.GetComponent<NetworkPlayerObject>();
         }
         
-        public void OnDisable()
+        void OnEnable()
         {
-            list = Object.FindObjectsOfType<Player>().ToList();
+            _list = Object.FindObjectsOfType<Player>().ToList();
         }
         
-        public void OnDestroy()
+        void OnDisable()
         {
-            list = Object.FindObjectsOfType<Player>().ToList();
+            _list = Object.FindObjectsOfType<Player>().ToList();
         }
+        
+        void OnDestroy()
+        {
+            _list = Object.FindObjectsOfType<Player>().ToList();
+        }
+        #endregion
 
+        #region APIProps
         /// <summary>
-        /// Gets all of the players in the server.
+        /// Gets the player's NetworkPlayerObject.
         /// </summary>
-        public static ReadOnlyCollection<Player> List => list.AsReadOnly();
-
+        public NetworkPlayerObject NetworkPlayer => this.player;
+        
         /// <summary>
-        /// Gets the player's gameobject.
+        /// Gets the player's GameObject.
         /// </summary>
         public GameObject GameObject => this.gameObject;
 
         /// <summary>
+        /// The user's client ID (unique and specific to this server/session).
+        /// </summary>
+        public ushort ID => this.NetworkPlayer.netObj.ClientId;
+        
+        /// <summary>
+        /// Gets the player's user ID (their ID through steam/discord), or null if they don't have one.
+        /// </summary>
+        [CanBeNull]
+        public string UserID
+        {
+            get
+            {
+                var id = NetworkManager.instance.connectedPlayers[this.ID].authUserId;
+                return string.IsNullOrEmpty(id) ? null : id;
+            }
+        }
+
+        /// <summary>
         /// Gets the player's dimension.
         /// </summary>
-        public RoomIdentity.ZoneType Dimension => this.player.GetZone();
-
-        /// <summary>
-        /// Kills the player.
-        /// </summary>
-        public void Kill(string message = null)
-        {
-            // TODO: Message, Killer.
-            this.player.stats.health.Kill();
-        }
-
-        /// <summary>
-        /// Kick a player from the server.
-        /// </summary>
-        /// <param name="message">The message to be sent to the player.</param>
-        public void Kick(string message = "You have been kicked from the server!")
-        {
-            // TODO: Kick messages.
-            NetworkManager.instance.Kick(this.player.netObj.ClientId);
-        }
+        public RoomIdentity.ZoneType Dimension => this.NetworkPlayer.GetZone();
 
         /// <summary>
         /// Gets or sets the player's name.
         /// </summary>
-        public string Name => this.player.PlayerName;
+        public string Name => this.NetworkPlayer.PlayerName;
 
         /// <summary>
         /// Gets or sets the player's health.
         /// </summary>
-        public float Health => this.player.stats.health.health;
+        public float Health => this.NetworkPlayer.stats.health.health;
 
         /// <summary>
         /// Damages the player.
@@ -114,42 +123,29 @@ namespace Labloader.Core.API.Features
         public void Damage(float damage)
         {
             // TODO: Message and killer.
-            this.player.stats.health.Damage(damage);
+            this.NetworkPlayer.stats.health.Damage(damage);
         }
 
         /// <summary>
         /// Gets the player's current role.
         /// </summary>
         public Role Role =>
-            this.player.stats.health.dead 
+            this.NetworkPlayer.stats.health.dead 
                 ? Role.Spectator 
-                : (RoleMap.TryGetValue(this.player.CurrentCharacter.name, out var role) ? role : Role.None);
+                : (RoleMap.TryGetValue(this.NetworkPlayer.CurrentCharacter.name, out var role) ? role : Role.None);
         
         /// <summary>
         /// Gets the player's current team.
         /// </summary>
         public Team Team =>
-            this.player.stats.health.dead 
+            this.NetworkPlayer.stats.health.dead 
                 ? Team.Dead 
-                : (TeamMap.TryGetValue(this.player.CurrentTeam.name, out var team) ? team : Team.None);
-
-        /// <summary>
-        /// Gets the player's ID, or null if they don't have one.
-        /// </summary>
-        [CanBeNull]
-        public string ID
-        {
-            get
-            {
-                var id = NetworkManager.instance.connectedPlayers[this.player.netObj.ClientId].authUserId;
-                return string.IsNullOrEmpty(id) ? null : id;
-            }
-        }
+                : (TeamMap.TryGetValue(this.NetworkPlayer.CurrentTeam.name, out var team) ? team : Team.None);
 
         /// <summary>
         /// Gets the player's IP address, or null if none exists.
         /// </summary>
-        public string IP => !((RudpServer)NetworkManager.instance.server.server).TryGetClient(this.player.netObj.ClientId, out var client) ? null : client.RemoteEndPoint.Address.ToString();
+        public string IP => !((RudpServer)NetworkManager.instance.server.server).TryGetClient(this.NetworkPlayer.netObj.ClientId, out var client) ? null : client.RemoteEndPoint.Address.ToString();
 
         /// <summary>
         /// Gets the player's transform.
@@ -188,8 +184,8 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public float WalkSpeed
         {
-            get => this.player.stats.data.walkSpeed;
-            set => this.player.stats.data.walkSpeed = value;
+            get => this.NetworkPlayer.stats.data.walkSpeed;
+            set => this.NetworkPlayer.stats.data.walkSpeed = value;
         }
 
         /// <summary>
@@ -197,8 +193,8 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public float SprintSpeed
         {
-            get => this.player.stats.data.sprintSpeed;
-            set => this.player.stats.data.sprintSpeed = value;
+            get => this.NetworkPlayer.stats.data.sprintSpeed;
+            set => this.NetworkPlayer.stats.data.sprintSpeed = value;
         }
 
         /// <summary>
@@ -206,8 +202,8 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public float CrouchSpeed
         {
-            get => this.player.stats.data.crouchSpeed;
-            set => this.player.stats.data.crouchSpeed = value;
+            get => this.NetworkPlayer.stats.data.crouchSpeed;
+            set => this.NetworkPlayer.stats.data.crouchSpeed = value;
         }
 
         /// <summary>
@@ -215,10 +211,42 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public bool Noclip
         {
-            get => this.player.NoclipController.enabled;
-            set => this.player.NoclipController.enabled = value;
+            get => this.NetworkPlayer.NoclipController.enabled;
+            set => this.NetworkPlayer.NoclipController.enabled = value;
+        }
+        #endregion
+
+        #region APIMethods
+        /// <summary>
+        /// Kills the player.
+        /// </summary>
+        public void Kill(string message = null)
+        {
+            // TODO: Message, Killer.
+            this.NetworkPlayer.stats.health.Kill();
         }
 
+        /// <summary>
+        /// Kick a player from the server.
+        /// </summary>
+        /// <param name="message">The message to be sent to the player.</param>
+        public void Kick(string message = "You have been kicked from the server!")
+        {
+            // TODO: Kick messages.
+            NetworkManager.instance.Kick(this.NetworkPlayer.netObj.ClientId);
+        }
+
+        /// <summary>
+        /// Permanently bans the player.
+        /// </summary>
+        /// <param name="reason">The reason that the player was banned.</param>
+        public void Ban([NotNull] string reason)
+        {
+            NetworkManager.instance.Ban(this.ID, reason);
+        }
+        #endregion
+
+        #region Overrides
         public override bool Equals(object obj)
         {
             return obj != null && obj is Player p && p.GameObject.Equals(this.GameObject);
@@ -233,5 +261,6 @@ namespace Labloader.Core.API.Features
         {
             return !(obj1 == obj2);
         }
+        #endregion
     }
 }
