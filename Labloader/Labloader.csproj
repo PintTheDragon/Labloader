@@ -34,62 +34,29 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll</HintPath>
-        </Reference>
         <Reference Include="Assembly-CSharp">
           <HintPath>..\..\..\LABRAT_DEPS\Assembly-CSharp-Publicized.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp-firstpass">
-          <HintPath>..\..\..\LABRAT_DEPS\Assembly-CSharp-firstpass.dll</HintPath>
-        </Reference>
-        <Reference Include="DissonanceVoip">
-          <HintPath>..\..\..\LABRAT_DEPS\DissonanceVoip.dll</HintPath>
-        </Reference>
-        <Reference Include="Newtonsoft.Json">
-          <HintPath>..\..\..\LABRAT_DEPS\Newtonsoft.Json.dll</HintPath>
-        </Reference>
-        <Reference Include="RiptideNetworking">
-          <HintPath>..\..\..\LABRAT_DEPS\RiptideNetworking-Publicized.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-        <Reference Include="UnityEngine">
-          <HintPath>..\..\..\LABRAT_DEPS\UnityEngine.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEngine.CoreModule">
           <HintPath>..\..\..\LABRAT_DEPS\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
+        <ProjectReference Include="..\Labloader.Core\Labloader.Core.csproj">
+          <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        </ProjectReference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="API\Enums\PluginPriority.cs" />
-        <Compile Include="API\Enums\Role.cs" />
-        <Compile Include="API\Enums\Team.cs" />
-        <Compile Include="API\Features\Log.cs" />
-        <Compile Include="API\Features\Paths.cs" />
-        <Compile Include="API\Features\Player.cs" />
-        <Compile Include="API\Features\Plugin.cs" />
-        <Compile Include="API\Interfaces\Config.cs" />
-        <Compile Include="Events\BaseEventListeners\IBaseEventListener.cs" />
-        <Compile Include="Events\BaseEventListeners\Listeners.cs" />
-        <Compile Include="Events\BaseEventListeners\Player\PlayerJoined.cs" />
-        <Compile Include="Events\BaseEventListeners\Player\PlayerLeft.cs" />
-        <Compile Include="Events\BaseEventListeners\SimpleListener.cs" />
-        <Compile Include="Events\EventArgs\PlayerJoinedEventArgs.cs" />
-        <Compile Include="Events\EventArgs\PlayerLeftEventArgs.cs" />
-        <Compile Include="Events\Patches\Patcher.cs" />
         <Compile Include="Loader.cs" />
-        <Compile Include="Events\Events.cs" />
-        <Compile Include="Events\EventType.cs" />
-        <Compile Include="Plugins\ConfigManager.cs" />
-        <Compile Include="Plugins\EventAttribute.cs" />
-        <Compile Include="Plugins\PluginLoader.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+      <EmbeddedResource Include="..\Labloader.Core\bin\Release\Labloader.Core.dll" WithCulture="false" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
