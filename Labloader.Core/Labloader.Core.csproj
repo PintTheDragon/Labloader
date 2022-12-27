@@ -148,14 +148,29 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="API\Enums\ItemType.cs" />
         <Compile Include="API\Enums\PluginPriority.cs" />
         <Compile Include="API\Enums\Role.cs" />
+        <Compile Include="API\Enums\Scp914Dial.cs" />
         <Compile Include="API\Enums\Team.cs" />
+        <Compile Include="API\Features\Item.cs" />
         <Compile Include="API\Features\Log.cs" />
         <Compile Include="API\Features\Paths.cs" />
         <Compile Include="API\Features\Player.cs" />
         <Compile Include="API\Features\Plugin.cs" />
         <Compile Include="API\Interfaces\Config.cs" />
+        <Compile Include="Events\EventArgs\PlayerDamagedEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerDropItemEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerEnterPocketDimensionEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerExecutingCommandEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerBannedEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerDiedEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerExitPocketDimensionEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerPickupItemEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerReloadGunEventArgs.cs" />
+        <Compile Include="Events\EventArgs\PlayerShootGunEventArgs.cs" />
+        <Compile Include="Events\EventArgs\Scp914UpgradingItemEventArgs.cs" />
+        <Compile Include="Events\EventArgs\Scp914UpgradingPlayerEventArgs.cs" />
         <Compile Include="Labloader.cs" />
         <Compile Include="Events\BaseEventListeners\IBaseEventListener.cs" />
         <Compile Include="Events\BaseEventListeners\Listeners.cs" />
