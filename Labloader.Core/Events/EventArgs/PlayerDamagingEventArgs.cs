@@ -1,16 +1,20 @@
+using JetBrains.Annotations;
 using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerDamagedEventArgs
+    public class PlayerDamagingEventArgs
     {
+        [CanBeNull]
         public Player Attacker { get; }
         
         public Player Target { get; }
         
         public float Damage { get; set; }
+
+        public bool IsAllowed { get; set; } = true;
         
-        internal PlayerDamagedEventArgs(Player attacker, Player target, float damage)
+        internal PlayerDamagingEventArgs(Player attacker, Player target, float damage)
         {
             Attacker = attacker;
             Target = target;

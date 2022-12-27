@@ -2,13 +2,15 @@ using Labloader.Core.API.Features;
 
 namespace Labloader.Core.Events.EventArgs
 {
-    public class PlayerDropItemEventArgs
+    public class PlayerDroppingItemEventArgs
     {
         public Player Player { get; }
         
         public Item Item { get; }
+        
+        public bool IsAllowed { get; set; } = true;
 
-        public PlayerDropItemEventArgs(Player player, Item item)
+        public PlayerDroppingItemEventArgs(Player player, Item item)
         {
             Player = player;
             Item = item;

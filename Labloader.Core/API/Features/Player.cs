@@ -46,6 +46,13 @@ namespace Labloader.Core.API.Features
             { "MTFTeam", Team.Mtf },
             { "SCPTeam", Team.Scp },
         };
+
+        /// <summary>
+        /// Gets the specified player by their GameObject.
+        /// </summary>
+        /// <param name="obj">The player's GameObject.</param>
+        /// <returns>The Player, or null if they don't exist.</returns>
+        public static Player Get(GameObject obj) => List.FirstOrDefault(ply => ply.GameObject == obj);
         #endregion
 
         #region COMPONENT
@@ -73,6 +80,9 @@ namespace Labloader.Core.API.Features
         #endregion
 
         #region APIProps
+
+        private new GameObject gameObject => base.gameObject;
+        
         /// <summary>
         /// Gets the player's NetworkPlayerObject.
         /// </summary>

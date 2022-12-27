@@ -17,8 +17,8 @@ namespace Labloader.Core.Events
         internal static event EventHandler<PlayerLeftEventArgs> PlayerLeft;
         internal static void OnPlayerLeft(PlayerLeftEventArgs ev) => PlayerLeft?.Invoke(null, ev);
         
-        internal static event EventHandler<PlayerDiedEventArgs> PlayerDied;
-        internal static void OnPlayerDied(PlayerDiedEventArgs ev) => PlayerDied?.Invoke(null, ev);
+        internal static event EventHandler<PlayerDyingEventArgs> PlayerDying;
+        internal static void OnPlayerDying(PlayerDyingEventArgs ev) => PlayerDying?.Invoke(null, ev);
         
         internal static event EventHandler<PlayerBannedEventArgs> PlayerBanned;
         internal static void OnPlayerBanned(PlayerBannedEventArgs ev) => PlayerBanned?.Invoke(null, ev);
@@ -26,20 +26,20 @@ namespace Labloader.Core.Events
         internal static event EventHandler<PlayerExecutingCommandEventArgs> PlayerExecutingCommand;
         internal static void OnPlayerExecutingCommand(PlayerExecutingCommandEventArgs ev) => PlayerExecutingCommand?.Invoke(null, ev);
         
-        internal static event EventHandler<PlayerPickupItemEventArgs> PlayerPickupItem;
-        internal static void OnPlayerPickupItem(PlayerPickupItemEventArgs ev) => PlayerPickupItem?.Invoke(null, ev);
+        internal static event EventHandler<PlayerPickingUpItemEventArgs> PlayerPickingUpItem;
+        internal static void OnPlayerPickingUpItem(PlayerPickingUpItemEventArgs ev) => PlayerPickingUpItem?.Invoke(null, ev);
         
-        internal static event EventHandler<PlayerDropItemEventArgs> PlayerDropItem;
-        internal static void OnPlayerDropItem(PlayerDropItemEventArgs ev) => PlayerDropItem?.Invoke(null, ev);
+        internal static event EventHandler<PlayerDroppingItemEventArgs> PlayerDroppingItem;
+        internal static void OnPlayerDroppingItem(PlayerDroppingItemEventArgs ev) => PlayerDroppingItem?.Invoke(null, ev);
         
-        internal static event EventHandler<PlayerShootGunEventArgs> PlayerShootGun;
-        internal static void OnPlayerShootGun(PlayerShootGunEventArgs ev) => PlayerShootGun?.Invoke(null, ev);
+        internal static event EventHandler<PlayerShootingGunEventArgs> PlayerShootingGun;
+        internal static void OnPlayerShootIngGun(PlayerShootingGunEventArgs ev) => PlayerShootingGun?.Invoke(null, ev);
         
-        internal static event EventHandler<PlayerDamagedEventArgs> PlayerDamaged;
-        internal static void OnPlayerDamaged(PlayerDamagedEventArgs ev) => PlayerDamaged?.Invoke(null, ev);
+        internal static event EventHandler<PlayerDamagingEventArgs> PlayerDamaging;
+        internal static void OnPlayerDamaging(PlayerDamagingEventArgs ev) => PlayerDamaging?.Invoke(null, ev);
         
-        internal static event EventHandler<PlayerReloadGunEventArgs> PlayerReloadGun;
-        internal static void OnPlayerReloadGun(PlayerReloadGunEventArgs ev) => PlayerReloadGun?.Invoke(null, ev);
+        internal static event EventHandler<PlayerReloadingGunEventArgs> PlayerReloadingGun;
+        internal static void OnPlayerReloadingGun(PlayerReloadingGunEventArgs ev) => PlayerReloadingGun?.Invoke(null, ev);
         
         internal static event EventHandler<PlayerEnterPocketDimensionEventArgs> PlayerEnterPocketDimension;
         internal static void OnPlayerEnterPocketDimension(PlayerEnterPocketDimensionEventArgs ev) => PlayerEnterPocketDimension?.Invoke(null, ev);
