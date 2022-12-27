@@ -56,8 +56,14 @@
     <ItemGroup>
       <None Include="packages.config" />
     </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll" WithCulture="false" />
+    </ItemGroup>
     <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
       <EmbeddedResource Include="..\Labloader.Core\bin\Release\Labloader.Core.dll" WithCulture="false" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+      <EmbeddedResource Include="..\Labloader.Core\bin\Debug\Labloader.Core.dll" WithCulture="false" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
