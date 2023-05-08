@@ -36,14 +36,14 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
-          <HintPath>..\..\..\LABRAT_DEPS\Assembly-CSharp-Publicized.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\Assembly-CSharp-Publicized.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
         <Reference Include="UnityEngine.CoreModule">
-          <HintPath>..\..\..\LABRAT_DEPS\UnityEngine.CoreModule.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
         <ProjectReference Include="..\Labloader.Core\Labloader.Core.csproj">
           <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

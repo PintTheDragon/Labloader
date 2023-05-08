@@ -8,3 +8,4 @@ Labloader.Example/bin
 Labloader.Example/obj
 Labloader.sln.DotSettings.user
 *.nupkg
+LABRAT_DEPS/

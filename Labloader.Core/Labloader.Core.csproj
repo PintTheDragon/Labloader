@@ -39,23 +39,23 @@
           <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp">
-          <HintPath>..\..\..\LABRAT_DEPS\Assembly-CSharp-Publicized.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\Assembly-CSharp-Publicized.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass">
-          <HintPath>..\..\..\LABRAT_DEPS\Assembly-CSharp-firstpass.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\Assembly-CSharp-firstpass.dll</HintPath>
         </Reference>
         <Reference Include="DissonanceVoip">
-          <HintPath>..\..\..\LABRAT_DEPS\DissonanceVoip.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\DissonanceVoip.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
         </Reference>
         <Reference Include="mscorlib" />
         <Reference Include="Newtonsoft.Json">
-          <HintPath>..\..\..\LABRAT_DEPS\Newtonsoft.Json.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\Newtonsoft.Json.dll</HintPath>
         </Reference>
         <Reference Include="RiptideNetworking">
-          <HintPath>..\..\..\LABRAT_DEPS\RiptideNetworking-Publicized.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\RiptideNetworking-Publicized.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -141,10 +141,10 @@
           <HintPath>..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine">
-          <HintPath>..\..\..\LABRAT_DEPS\UnityEngine.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
-          <HintPath>..\..\..\LABRAT_DEPS\UnityEngine.CoreModule.dll</HintPath>
+          <HintPath>..\LABRAT_DEPS\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
