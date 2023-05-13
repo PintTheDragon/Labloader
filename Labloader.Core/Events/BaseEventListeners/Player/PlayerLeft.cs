@@ -9,12 +9,9 @@ namespace Labloader.Core.Events.BaseEventListeners.Player
 
         public override void Run(ushort id)
         {
-            if (id == 0) return;
-            
             var player = API.Features.Player.Get(id);
-            
-            if(player)
-                Core.Events.Events.OnPlayerLeft(new PlayerLeftEventArgs(player));
+            if (id == 0) return;
+            Core.Events.Events.OnPlayerLeft(new PlayerLeftEventArgs(player));
         }
     }
 }

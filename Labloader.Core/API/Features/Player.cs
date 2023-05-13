@@ -8,21 +8,22 @@ using UnityEngine;
 
 namespace Labloader.Core.API.Features
 {
-    public class Player : MonoBehaviour
+    public struct Player
     {
         #region STATIC
+
         private static List<Player> _list = new List<Player>();
 
-        private static void UpdateList()
+        internal static void UpdateList()
         {
-            _list = Object.FindObjectsOfType<Player>().Where(ply => ply.ID != 0).ToList();
+            _list = NetworkManager.instance.connectedPlayers.Select(x => new Player(x.Key)).ToList();
         }
-        
+
         /// <summary>
         /// Gets all of the players in the server.
         /// </summary>
         public static ReadOnlyCollection<Player> List => _list.AsReadOnly();
-        
+
         /// <summary>
         /// Maps unity object name (PlayerCharacter.name) to role enum.
         /// </summary>
@@ -56,72 +57,56 @@ namespace Labloader.Core.API.Features
         /// Gets the specified player by their GameObject.
         /// </summary>
         /// <param name="obj">The player's GameObject.</param>
-        /// <returns>The Player, or null if they don't exist.</returns>
-        public static Player Get(GameObject obj) => List.FirstOrDefault(ply => ply.GameObject == obj);
-        
+        /// <returns>The Player.</returns>
+        public static Player Get(GameObject obj) => Get(obj.GetComponent<NetworkObject>().PlayerId.Value);
+
         /// <summary>
         /// Gets the specified player by their ID (specific to this server/session).
         /// </summary>
         /// <param name="id">The player's ID.</param>
-        /// <returns>The Player, or null if they don't exist.</returns>
-        public static Player Get(ushort id) => List.FirstOrDefault(ply => ply.ID == id);
+        /// <returns>The Player.</returns>
+        public static Player Get(ushort id) => new Player(id);
         #endregion
 
         #region COMPONENT
 
-        private NetworkPlayer player;
-        private NetworkPlayerObject playerObj;
         private ushort id;
 
-        void Awake()
+        private Player(ushort id)
         {
-            this.player = this.gameObject.GetComponent<NetworkPlayer>();
-            this.playerObj = this.gameObject.GetComponent<NetworkPlayerObject>();
-            this.id = this.player != null ? this.player.netObj.ClientId : this.playerObj.netObj.ClientId;
-        }
-        
-        void OnEnable()
-        {
-            UpdateList();
-        }
-        
-        void OnDisable()
-        {
-            UpdateList();
-        }
-        
-        void OnDestroy()
-        {
-            UpdateList();
+            this.id = id;
         }
         #endregion
 
         #region APIProps
 
-        private new GameObject gameObject => base.gameObject;
-        
+        /// <summary>
+        /// Gets if this Player reference is valid.
+        /// </summary>
+        public bool IsValid => this.id != 0 && NetworkManager.instance.connectedPlayers.ContainsKey(this.id);
+
         /// <summary>
         /// Gets the player's NetworkPlayer.
         /// </summary>
-        public NetworkPlayer NetworkPlayer => this.player;
-        
+        public NetworkPlayer NetworkPlayer => NetworkManager.instance.connectedPlayers[this.id].player;
+
         /// <summary>
         /// Gets the player's NetworkPlayerObject.
         /// </summary>
-        public NetworkPlayerObject NetworkPlayerObject => this.playerObj;
-        
+        public NetworkPlayerObject NetworkPlayerObject => NetworkManager.instance.connectedPlayers[this.id].playerObject;
+
         /// <summary>
         /// Gets the player's GameObject.
         /// </summary>
-        public GameObject GameObject => this.gameObject;
+        public GameObject GameObject => this.NetworkPlayerObject == null ? this.NetworkPlayer.gameObject : this.NetworkPlayerObject.gameObject;
 
         /// <summary>
         /// The user's client ID (unique and specific to this server/session).
         /// </summary>
         public ushort ID => id;
-        
+
         /// <summary>
-        /// Gets the player's user ID (their ID through steam/discord), or null if they don't have one.
+        /// Gets the player's user ID (their ID through steam/discord/bbg), or null if they don't have one.
         /// </summary>
         [CanBeNull]
         public string UserID
@@ -139,12 +124,12 @@ namespace Labloader.Core.API.Features
         public RoomIdentity.ZoneType Dimension => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.GetZone() : RoomIdentity.ZoneType.Unknown;
 
         /// <summary>
-        /// Gets or sets the player's name.
+        /// Gets the player's name.
         /// </summary>
         public string Name => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.PlayerName : this.NetworkPlayer.PlayerName;
 
         /// <summary>
-        /// Gets or sets the player's health.
+        /// Gets the player's health.
         /// </summary>
         public float Health => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.health.health : 0;
 
@@ -164,15 +149,15 @@ namespace Labloader.Core.API.Features
         /// </summary>
         public Role Role =>
             (this.NetworkPlayerObject == null || this.NetworkPlayerObject.stats.health.dead)
-                ? Role.Spectator 
+                ? Role.Spectator
                 : (RoleMap.TryGetValue(this.NetworkPlayerObject.CurrentCharacter.name, out var role) ? role : Role.None);
-        
+
         /// <summary>
         /// Gets the player's current team.
         /// </summary>
         public Team Team =>
             (this.NetworkPlayerObject == null || this.NetworkPlayerObject.stats.health.dead)
-                ? Team.Dead 
+                ? Team.Dead
                 : (TeamMap.TryGetValue(this.NetworkPlayerObject.CurrentTeam.name, out var team) ? team : Team.None);
 
         /// <summary>
@@ -213,46 +198,19 @@ namespace Labloader.Core.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the player's walk speed.
+        /// Gets the player's walk speed.
         /// </summary>
-        public float WalkSpeed
-        {
-            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.walkSpeed : 0;
-            set
-            {
-                if (this.NetworkPlayerObject == null) return;
-                
-                this.NetworkPlayerObject.stats.data.walkSpeed = value;
-            }
-        }
+        public float WalkSpeed => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.walkSpeed : 0;
 
         /// <summary>
-        /// Gets or sets the player's sprint speed.
+        /// Gets the player's sprint speed.
         /// </summary>
-        public float SprintSpeed
-        {
-            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.sprintSpeed : 0;
-            set
-            {
-                if (this.NetworkPlayerObject == null) return;
-                
-                this.NetworkPlayerObject.stats.data.sprintSpeed = value;
-            }
-        }
+        public float SprintSpeed => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.sprintSpeed : 0;
 
         /// <summary>
-        /// Gets or sets the player's crouch speed.
+        /// Gets the player's crouch speed.
         /// </summary>
-        public float CrouchSpeed
-        {
-            get => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.crouchSpeed : 0;
-            set
-            {
-                if (this.NetworkPlayerObject == null) return;
-                
-                this.NetworkPlayerObject.stats.data.crouchSpeed = value;
-            }
-        }
+        public float CrouchSpeed => this.NetworkPlayerObject != null ? this.NetworkPlayerObject.stats.data.crouchSpeed : 0;
 
         /// <summary>
         /// Gets or sets whether or not the player is noclipping.
@@ -263,7 +221,7 @@ namespace Labloader.Core.API.Features
             set
             {
                 if (this.NetworkPlayerObject == null) return;
-                
+
                 this.NetworkPlayerObject.NoclipController.enabled = value;
             }
         }
@@ -276,7 +234,7 @@ namespace Labloader.Core.API.Features
         public void Kill(string message = null)
         {
             if (this.NetworkPlayerObject == null) return;
-            
+
             // TODO: Message, Killer.
             this.NetworkPlayerObject.stats.health.Kill();
         }
@@ -288,7 +246,7 @@ namespace Labloader.Core.API.Features
         public void Kick(string message = "You have been kicked from the server!")
         {
             // TODO: Kick messages.
-            NetworkManager.instance.Kick(this.NetworkPlayer.netObj.ClientId);
+            NetworkManager.instance.Kick(this.NetworkPlayer.netObj.ClientId, message);
         }
 
         /// <summary>
@@ -298,23 +256,6 @@ namespace Labloader.Core.API.Features
         public void Ban([NotNull] string reason)
         {
             NetworkManager.instance.Ban(this.ID, reason);
-        }
-        #endregion
-
-        #region Overrides
-        public override bool Equals(object obj)
-        {
-            return obj != null && obj is Player p && p.GameObject.Equals(this.GameObject);
-        }
-
-        public static bool operator ==(Player obj1, object obj2)
-        {
-            return !(obj1 is null) && obj1.Equals(obj2);
-        }
-
-        public static bool operator !=(Player obj1, object obj2)
-        {
-            return !(obj1 == obj2);
         }
         #endregion
     }

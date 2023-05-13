@@ -2,6 +2,7 @@ $extra_install_flags = ""
 # $extra_install_flags = "-beta unstable-beta"
 
 $work_dir = "./workspace/"
+$nuget_exe = $work_dir + "nuget.exe"
 $game_dir = $work_dir + "serverfiles/"
 $apublicizer_dir = $work_dir + "apublicizer/"
 $apublicizer_zip = $work_dir + "apublicizer.zip"
@@ -39,5 +40,11 @@ if (!(Test-Path -Path $apublicizer_zip -PathType Any)) {
 
 dotnet run -c Release --project "./workspace/apublicizer/APublicizer-1.0.3/APublicizer.csproj" "./LABRAT_DEPS/Assembly-CSharp.dll"
 dotnet run -c Release --project "./workspace/apublicizer/APublicizer-1.0.3/APublicizer.csproj" "./LABRAT_DEPS/RiptideNetworking.dll"
+
+Write-Progress -Activity "Installing Latest NuGet Package Manager"
+if (!(Test-Path -Path $nuget_exe -PathType Any)) {
+    Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile $nuget_exe
+}
+& $nuget_exe restore Labloader.sln
 
 Write-Output "Project is setup and ready!"

@@ -16,10 +16,18 @@ namespace Labloader.Core.Events
         public delegate void EventHandler();
 
         public static event EventHandler<PlayerJoinedEventArgs> PlayerJoined;
-        internal static void OnPlayerJoined(PlayerJoinedEventArgs ev) => PlayerJoined?.Invoke(ev);
+        internal static void OnPlayerJoined(PlayerJoinedEventArgs ev)
+        {
+            API.Features.Player.UpdateList();
+            PlayerJoined?.Invoke(ev);
+        }
         
         public static event EventHandler<PlayerLeftEventArgs> PlayerLeft;
-        internal static void OnPlayerLeft(PlayerLeftEventArgs ev) => PlayerLeft?.Invoke(ev);
+        internal static void OnPlayerLeft(PlayerLeftEventArgs ev)
+        {
+            API.Features.Player.UpdateList();
+            PlayerLeft?.Invoke(ev);
+        }
         
         public static event EventHandler<PlayerDyingEventArgs> PlayerDying;
         internal static void OnPlayerDying(PlayerDyingEventArgs ev) => PlayerDying?.Invoke(ev);
